@@ -1,0 +1,564 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0d15">
+<title>STUDYFORGE — نظامك الذكي للمذاكرة</title>
+<style>
+:root{
+  --bg:#0b0d15;--panel:#121624;--panel2:#191e30;--line:#292f45;
+  --text:#f4f5ff;--muted:#929bb5;--purple:#a78bfa;--cyan:#67e8f9;
+  --green:#86efac;--pink:#f9a8d4;--yellow:#fcd34d;--red:#fda4af;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 8% 0%,#29204b 0,transparent 32%),radial-gradient(ellipse at 95% 35%,#10313a 0,transparent 28%),var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.app{max-width:1450px;margin:auto;min-height:100vh;padding:20px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;padding:8px 0 22px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,#a78bfa,#67e8f9);color:#101020;font-weight:bold;font-size:23px;box-shadow:0 0 30px #a78bfa35}
+.brand h1{font-size:23px;letter-spacing:-.8px;margin:0}
+.brand p{color:var(--muted);font-size:11px;margin:5px 0 0}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{border:1px solid var(--line);border-radius:30px;padding:9px 12px;font-size:11px;color:var(--muted);background:#ffffff05}
+.layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:20px;align-items:start}
+.sidebar,.panel{border:1px solid var(--line);background:#111521eF;border-radius:20px}
+.sidebar{padding:13px;position:sticky;top:15px}
+.nav-caption{font-size:10px;color:var(--muted);padding:12px 10px 7px}
+.nav{display:flex;align-items:center;gap:11px;width:100%;border:1px solid transparent;background:transparent;color:#aeb6cc;border-radius:12px;padding:13px 12px;text-align:right;margin:3px 0;transition:.2s}
+.nav:hover{background:#ffffff07;color:white}
+.nav.active{color:white;background:linear-gradient(100deg,#a78bfa20,#67e8f90a);border-color:#7563b8}
+.nav .ico{width:30px;height:30px;display:grid;place-items:center;background:#ffffff09;border-radius:9px;font-size:17px}
+.side-note{margin-top:18px;border-top:1px solid var(--line);padding:14px 9px 3px;color:var(--muted);font-size:11px;line-height:1.9}
+.main{min-width:0}
+.page{display:none;animation:appear .25s ease}
+.page.active{display:block}
+@keyframes appear{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.welcome{border:1px solid #3b315e;border-radius:22px;background:linear-gradient(115deg,#211b3b,#121d2c);padding:26px;position:relative;overflow:hidden;margin-bottom:19px}
+.welcome:after{content:"✦";position:absolute;left:30px;top:-45px;font-size:180px;color:#ffffff06;pointer-events:none}
+.eyebrow{font-size:11px;color:var(--cyan);letter-spacing:1.5px}
+.welcome h2{font-size:clamp(25px,4vw,36px);margin:13px 0 10px}
+.welcome p{font-size:13px;line-height:1.9;color:#b3bbd1;max-width:650px;margin:0}
+.welcome-bottom{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:19px}
+.btn{border:1px solid #343b52;background:#1a2030;color:#e8eafa;padding:10px 14px;border-radius:10px;font-size:12px;transition:.2s}
+.btn:hover{transform:translateY(-1px);border-color:#8d7ad5}
+.btn.primary{background:linear-gradient(110deg,#8b5cf6,#6366f1);border:0;color:white;font-weight:bold}
+.btn.cyan{background:#123039;border-color:#28606a;color:var(--cyan)}
+.btn.green{background:#143125;border-color:#285b43;color:var(--green)}
+.btn.danger{color:var(--red)}
+.btn.small{padding:7px 10px;font-size:11px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:19px}
+.stat{padding:17px;background:linear-gradient(140deg,#171c2b,#111521);border:1px solid var(--line);border-radius:16px;min-width:0}
+.stat-top{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:11px}
+.stat-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#a78bfa17;color:var(--purple);font-size:16px}
+.stat strong{display:block;font-size:27px;margin:13px 0 5px;overflow-wrap:anywhere}
+.stat small{font-size:10px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-bottom:17px}
+.panel{padding:20px;min-width:0}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:17px}
+.panel-head h3{font-size:15px;margin:0}
+.panel-head p{font-size:11px;color:var(--muted);margin:6px 0 0}
+.link-btn{border:0;background:none;color:var(--cyan);font-size:11px;padding:5px}
+.empty{border:1px dashed #353b50;border-radius:12px;padding:22px 12px;text-align:center;color:var(--muted);font-size:12px;line-height:1.9}
+.task-list{display:grid;gap:9px}
+.task{display:flex;align-items:center;gap:10px;background:#ffffff04;border:1px solid #272d40;border-radius:12px;padding:12px;min-width:0}
+.task input[type=checkbox]{width:17px;height:17px;accent-color:#a78bfa;flex-shrink:0}
+.task-info{flex:1;min-width:0}
+.task-title{font-size:12px;overflow-wrap:anywhere}
+.task.done .task-title{text-decoration:line-through;color:var(--muted)}
+.task-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:10px}
+.badge{padding:4px 7px;border-radius:6px;font-size:10px;background:#ffffff08;color:var(--muted)}
+.badge.high{color:var(--red);background:#fda4af12}
+.badge.medium{color:var(--yellow);background:#fcd34d12}
+.badge.low{color:var(--green);background:#86efac12}
+.progress-row{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:11px;margin:17px 0 8px}
+.bar{height:7px;border-radius:20px;background:#292d40;overflow:hidden}
+.bar>div{height:100%;width:0;background:linear-gradient(90deg,#8b5cf6,#67e8f9);border-radius:20px;transition:width .3s}
+.chart{height:140px;display:flex;align-items:flex-end;gap:10px;padding:8px 0 0}
+.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;height:100%;min-width:0}
+.chart-bar{width:min(35px,70%);min-height:3px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#67e8f9,#8b5cf6);transition:height .3s}
+.chart-label{font-size:10px;color:var(--muted)}
+.section-title{margin:0 0 6px;font-size:24px}
+.section-desc{color:var(--muted);font-size:12px;line-height:1.8;margin:0 0 20px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.field{min-width:0;margin-bottom:14px}
+.field label{display:block;color:#cbd1e5;font-size:11px;margin-bottom:8px}
+.field input,.field textarea,.field select,.search{width:100%;background:#090c15;border:1px solid #30364c;border-radius:10px;padding:12px;color:var(--text);outline:none;min-width:0}
+.field textarea{min-height:90px;resize:vertical;line-height:1.7}
+.field input:focus,.field textarea:focus,.field select:focus,.search:focus{border-color:#8b7be6;box-shadow:0 0 0 3px #8b5cf61a}
+.field select option{background:#111521}
+.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:15px}
+.toolbar .search{flex:1;min-width:160px}
+.items{display:grid;gap:10px}
+.subject-card{border:1px solid var(--line);border-radius:14px;padding:15px;background:#ffffff04}
+.subject-card h4{margin:0 0 8px;font-size:14px}
+.subject-card p{font-size:11px;color:var(--muted);line-height:1.8;margin:0 0 12px;overflow-wrap:anywhere}
+.subject-foot{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.flash-wrap{max-width:720px;margin:auto}
+.flashcard{min-height:240px;border:1px solid #4b3c72;border-radius:20px;background:radial-gradient(ellipse at 20% 0%,#49327355,transparent 60%),linear-gradient(135deg,#191b31,#111b28);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;cursor:pointer;user-select:none;transition:.25s}
+.flashcard:hover{border-color:#a78bfa}
+.flashcard .flash-label{font-size:11px;color:var(--cyan);margin-bottom:20px}
+.flashcard .flash-text{font-size:clamp(19px,3vw,28px);line-height:1.8;overflow-wrap:anywhere}
+.flashcard .flash-hint{font-size:11px;color:var(--muted);margin-top:20px}
+.flash-controls{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:15px 0}
+.flash-count{text-align:center;color:var(--muted);font-size:11px;margin-bottom:15px}
+.timer-panel{text-align:center;padding:35px 20px}
+.timer-ring{width:min(290px,75vw);aspect-ratio:1;border-radius:50%;margin:20px auto 26px;display:grid;place-items:center;background:conic-gradient(var(--purple) var(--angle,0deg),#282b3e 0deg);position:relative}
+.timer-ring:before{content:"";position:absolute;inset:10px;border-radius:50%;background:#111521;border:1px solid #34324e}
+.timer-content{position:relative;z-index:1}
+.timer-time{font-size:clamp(45px,8vw,64px);font-weight:bold;letter-spacing:-2px;font-variant-numeric:tabular-nums}
+.timer-mode{font-size:12px;color:var(--cyan);margin-top:9px}
+.timer-settings{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:20px 0}
+.timer-settings label{font-size:11px;color:var(--muted)}
+.timer-settings input{width:65px;background:#090c15;border:1px solid var(--line);color:white;padding:9px;border-radius:9px}
+.session-list{display:grid;gap:9px}
+.session{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:12px}
+.session small{color:var(--muted)}
+.flash-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.flash-form .field{margin-bottom:0}
+.settings-box{border:1px solid var(--line);border-radius:14px;padding:17px;margin-bottom:14px}
+.settings-box h4{margin:0 0 8px;font-size:13px}
+.settings-box p{color:var(--muted);font-size:11px;line-height:1.8;margin:0 0 12px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#192536;border:1px solid #3c5871;color:#e2faff;padding:12px 17px;border-radius:12px;font-size:12px;z-index:99;transition:.25s;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.footer{text-align:center;color:#717b96;font-size:10px;padding:23px 5px}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.layout{grid-template-columns:1fr}.sidebar{position:static;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}.nav-caption,.side-note{grid-column:1/-1}.nav{padding:9px 7px;gap:6px;font-size:11px}.nav .ico{width:26px;height:26px}.grid2{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.app{padding:12px}.topbar{padding-bottom:15px}.brand h1{font-size:19px}.grid2{grid-template-columns:1fr}.welcome{padding:20px}.panel{padding:15px}.sidebar{grid-template-columns:repeat(2,minmax(0,1fr))}.form-grid{grid-template-columns:1fr}.flash-form{grid-template-columns:1fr}.stat{padding:13px}.stat strong{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand"><div class="logo">SF</div><div><h1>STUDY<span style="color:var(--purple)">FORGE</span></h1><p>اصنع تركيزك. ابنِ مستقبلك.</p></div></div>
+  <div class="top-actions"><span class="pill" id="todayLabel">📅 اليوم</span><button class="btn" id="exportBtn">↓ نسخة احتياطية</button><button class="btn" id="importBtn">↑ استعادة</button><input type="file" id="importFile" accept=".json,application/json" hidden></div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav-caption">مساحة الدراسة</div>
+  <button class="nav active" data-page="dashboard"><span class="ico">⌂</span> الرئيسية</button>
+  <button class="nav" data-page="tasks"><span class="ico">☑</span> خطة المذاكرة</button>
+  <button class="nav" data-page="subjects"><span class="ico">▤</span> المواد الدراسية</button>
+  <button class="nav" data-page="flashcards"><span class="ico">◈</span> بطاقات الحفظ</button>
+  <button class="nav" data-page="focus"><span class="ico">◷</span> مؤقت التركيز</button>
+  <button class="nav" data-page="progress"><span class="ico">↗</span> تقدمي</button>
+  <button class="nav" data-page="settings"><span class="ico">⚙</span> الإعدادات</button>
+  <div class="side-note">✦ كل خطوة صغيرة تصنع فرقًا.<br>بياناتك محفوظة محليًا على هذا المتصفح.</div>
+</aside>
+<main class="main">
+<section class="page active" id="page-dashboard">
+  <div class="welcome"><div class="eyebrow">YOUR PERSONAL STUDY SPACE</div><h2>أهلًا بك في مساحة إنجازك ✨</h2><p id="welcomeText">خطوة صغيرة اليوم، وفرق كبير غدًا. نظّم دراستك وابدأ بأهم مهمة عندك.</p><div class="welcome-bottom"><button class="btn primary" data-go="tasks">+ خطط مذاكرتك</button><button class="btn" data-go="focus">ابدأ جلسة تركيز</button></div></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-top">المهام المكتملة <span class="stat-icon">✓</span></div><strong id="statDone">0</strong><small>مهمة أنجزتها</small></div>
+    <div class="stat"><div class="stat-top">وقت التركيز <span class="stat-icon">◷</span></div><strong id="statMinutes">0</strong><small>دقيقة مسجلة</small></div>
+    <div class="stat"><div class="stat-top">بطاقات الحفظ <span class="stat-icon">◈</span></div><strong id="statCards">0</strong><small>بطاقة أنشأتها</small></div>
+    <div class="stat"><div class="stat-top">نسبة الإنجاز <span class="stat-icon">↗</span></div><strong id="statPercent">0%</strong><small>من كل مهامك</small></div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><div class="panel-head"><div><h3>مهامك القادمة</h3><p>ابدأ بالمهمة التالية مباشرة</p></div><button class="link-btn" data-go="tasks">كل المهام ←</button></div><div class="task-list" id="dashTasks"></div><div class="progress-row"><span>إنجاز جميع المهام</span><span id="dashProgressLabel">0%</span></div><div class="bar"><div id="dashProgressBar"></div></div></div>
+    <div class="panel"><div class="panel-head"><div><h3>وقت التركيز الأسبوعي</h3><p>الدقائق المسجلة لكل يوم</p></div><span class="badge">آخر 7 أيام</span></div><div class="chart" id="dashChart"></div><div class="result" id="dashChartNote" style="margin-top:12px;font-size:11px;color:var(--muted)">ابدأ جلسة تركيز لتظهر بياناتك هنا.</div></div>
+  </div>
+  <div class="panel"><div class="panel-head"><div><h3>ابدأ من هنا</h3><p>أدواتك الأساسية في مكان واحد</p></div></div><div class="form-actions"><button class="btn" data-go="subjects">▤ أضف مادة</button><button class="btn" data-go="tasks">☑ أضف مهمة</button><button class="btn" data-go="flashcards">◈ أنشئ بطاقة</button><button class="btn" data-go="focus">◷ شغّل المؤقت</button></div></div>
+</section>
+<section class="page" id="page-tasks">
+  <h2 class="section-title">خطة المذاكرة</h2><p class="section-desc">حوّل المطلوب منك إلى مهام واضحة. علّم المهمة عند إتمامها لتحديث تقدمك.</p>
+  <div class="panel" style="margin-bottom:16px"><div class="panel-head"><div><h3 id="taskFormTitle">إضافة مهمة جديدة</h3><p>اكتب المطلوب وحدد الأولوية والموعد.</p></div></div>
+    <form id="taskForm"><input type="hidden" id="taskId"><div class="form-grid">
+      <div class="field"><label for="taskTitle">عنوان المهمة *</label><input id="taskTitle" maxlength="120" required placeholder="مثال: مراجعة الفصل الأول"></div>
+      <div class="field"><label for="taskSubject">المادة</label><select id="taskSubject"><option value="">بدون مادة محددة</option></select></div>
+      <div class="field"><label for="taskDate">الموعد النهائي</label><input id="taskDate" type="date"></div>
+      <div class="field"><label for="taskPriority">الأولوية</label><select id="taskPriority"><option value="high">عالية</option><option value="medium" selected>متوسطة</option><option value="low">منخفضة</option></select></div>
+      <div class="field"><label for="taskEstimate">وقت متوقع (دقيقة)</label><input id="taskEstimate" type="number" min="1" max="1440" value="30"></div>
+      <div class="field"><label for="taskNotes">ملاحظات (اختياري)</label><input id="taskNotes" maxlength="300" placeholder="تفاصيل إضافية"></div>
+    </div><div class="form-actions"><button class="btn primary" type="submit" id="taskSubmit">+ حفظ المهمة</button><button class="btn" type="button" id="taskCancel" hidden>إلغاء التعديل</button></div></form>
+  </div>
+  <div class="panel"><div class="panel-head"><div><h3>كل المهام</h3><p id="taskCount">0 مهمة</p></div></div><div class="toolbar"><input class="search" id="taskSearch" placeholder="ابحث في المهام..."><select id="taskFilter" style="width:auto;min-width:130px;background:#090c15;border:1px solid var(--line);color:white;padding:11px;border-radius:10px"><option value="all">كل المهام</option><option value="open">غير المكتملة</option><option value="done">المكتملة</option></select></div><div class="items" id="taskList"></div></div>
+</section>
+<section class="page" id="page-subjects">
+  <h2 class="section-title">المواد الدراسية</h2><p class="section-desc">أنشئ مساحة لكل مادة وتابع الدروس والموارد التي تحتاجها.</p>
+  <div class="panel" style="margin-bottom:16px"><div class="panel-head"><div><h3 id="subjectFormTitle">إضافة مادة</h3><p>يمكنك ربط مهامك وبطاقاتك بكل مادة.</p></div></div>
+  <form id="subjectForm"><input type="hidden" id="subjectId"><div class="form-grid"><div class="field"><label for="subjectName">اسم المادة *</label><input id="subjectName" maxlength="80" required placeholder="مثال: الرياضيات"></div><div class="field"><label for="subjectColor">لون المادة</label><select id="subjectColor"><option value="#a78bfa">بنفسجي</option><option value="#67e8f9">سماوي</option><option value="#86efac">أخضر</option><option value="#f9a8d4">وردي</option><option value="#fcd34d">ذهبي</option><option value="#fda4af">أحمر</option></select></div><div class="field"><label for="subjectGoal">هدف المادة</label><input id="subjectGoal" maxlength="200" placeholder="مثال: إنهاء 5 فصول قبل الامتحان"></div></div><div class="form-actions"><button class="btn primary" type="submit" id="subjectSubmit">+ حفظ المادة</button><button class="btn" type="button" id="subjectCancel" hidden>إلغاء التعديل</button></div></form></div>
+  <div class="panel"><div class="panel-head"><div><h3>مكتبة المواد</h3><p>موادك المسجلة هنا</p></div></div><div class="items" id="subjectList"></div></div>
+</section>
+<section class="page" id="page-flashcards">
+  <h2 class="section-title">بطاقات الحفظ</h2><p class="section-desc">اكتب سؤالًا في وجه البطاقة وإجابته في ظهرها. اختبر ذاكرتك بنفسك.</p>
+  <div class="panel" style="margin-bottom:16px"><div class="panel-head"><div><h3>إنشاء بطاقة جديدة</h3><p>البطاقات التي تنشئها تحفظ على جهازك.</p></div></div><form id="cardForm"><div class="flash-form"><div class="field"><label for="cardQuestion">السؤال / الوجه الأمامي *</label><textarea id="cardQuestion" maxlength="1000" required placeholder="ما هو السؤال؟"></textarea></div><div class="field"><label for="cardAnswer">الإجابة / الوجه الخلفي *</label><textarea id="cardAnswer" maxlength="2000" required placeholder="اكتب الإجابة هنا..."></textarea></div></div><div class="form-grid"><div class="field"><label for="cardSubject">المادة</label><select id="cardSubject"><option value="">بدون مادة</option></select></div></div><div class="form-actions"><button class="btn primary" type="submit">+ إضافة البطاقة</button><button class="btn" type="button" id="cardSample">إضافة بطاقة مثال</button></div></form></div>
+  <div class="panel"><div class="panel-head"><div><h3>جلسة المراجعة</h3><p id="flashSummary">راجع البطاقات بالترتيب أو اختر مادة معينة.</p></div><select id="flashFilter" style="max-width:190px;background:#090c15;border:1px solid var(--line);color:white;padding:10px;border-radius:9px"><option value="all">كل المواد</option></select></div>
+    <div class="flash-wrap"><div class="flash-count" id="flashCount">لا توجد بطاقات للمراجعة</div><div class="flashcard" id="flashCard" tabindex="0" role="button" aria-label="اضغط لقلب البطاقة"><div class="flash-label" id="flashLabel">QUESTION</div><div class="flash-text" id="flashText">أضف أول بطاقة لتبدأ المراجعة</div><div class="flash-hint" id="flashHint">ستظهر البطاقات هنا</div></div><div class="flash-controls"><button class="btn" id="flashPrev">→ السابقة</button><button class="btn primary" id="flashFlip">اقلب البطاقة ↻</button><button class="btn" id="flashNext">التالية ←</button><button class="btn green" id="flashKnow">✓ أتقنتها</button><button class="btn danger" id="flashNeed">↻ أحتاج مراجعة</button></div></div>
+    <div class="panel-head" style="margin-top:25px"><div><h3>قائمة البطاقات</h3><p>يمكنك حذف البطاقة عند عدم الحاجة إليها.</p></div></div><div class="items" id="cardList"></div>
+  </div>
+</section>
+<section class="page" id="page-focus">
+  <h2 class="section-title">مؤقت التركيز</h2><p class="section-desc">أغلق المشتتات، اختر مهمة، وابدأ جلسة مركزة. تُسجّل الدقائق عند اكتمال الجلسة.</p>
+  <div class="panel timer-panel" style="margin-bottom:16px">
+    <div class="eyebrow">FOCUS MODE</div><h3 id="timerHeading" style="font-size:18px;margin:12px 0 0">وقت التركيز لك</h3>
+    <div class="timer-ring" id="timerRing"><div class="timer-content"><div class="timer-time" id="timerDisplay">25:00</div><div class="timer-mode" id="timerMode">جلسة تركيز</div></div></div>
+    <div class="timer-settings"><label>التركيز <input id="focusMinutes" type="number" min="1" max="180" value="25"> دقيقة</label><label>الاستراحة <input id="breakMinutes" type="number" min="1" max="60" value="5"> دقيقة</label></div>
+    <div class="field" style="max-width:450px;margin:0 auto 18px;text-align:right"><label for="focusTask">المهمة المرتبطة بالجلسة (اختياري)</label><select id="focusTask"><option value="">جلسة عامة</option></select></div>
+    <div class="form-actions" style="justify-content:center"><button class="btn primary" id="timerStart">▶ ابدأ</button><button class="btn" id="timerPause" disabled>Ⅱ إيقاف مؤقت</button><button class="btn" id="timerReset">↻ إعادة</button><button class="btn cyan" id="timerSkip">تخطّي للمرحلة التالية</button></div>
+    <div class="result" id="timerStatus" style="max-width:540px;margin:20px auto 0">الجلسة لم تبدأ بعد.</div>
+  </div>
+  <div class="panel"><div class="panel-head"><div><h3>سجل جلسات التركيز</h3><p>الجلسات المكتملة محفوظة في سجلّك.</p></div><span class="badge" id="sessionTotal">0 جلسة</span></div><div class="session-list" id="sessionList"></div></div>
+</section>
+<section class="page" id="page-progress">
+  <h2 class="section-title">تقدّمك الدراسي</h2><p class="section-desc">راجع ما أنجزته حتى الآن واستخدم الأرقام لتعديل خطتك.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-top">إجمالي المهام <span class="stat-icon">☑</span></div><strong id="progressTasks">0</strong><small>مهمة مسجلة</small></div>
+    <div class="stat"><div class="stat-top">المكتمل <span class="stat-icon">✓</span></div><strong id="progressDone">0</strong><small>مهمة منجزة</small></div>
+    <div class="stat"><div class="stat-top">ساعات التركيز <span class="stat-icon">◷</span></div><strong id="progressHours">0</strong><small>من الجلسات المكتملة</small></div>
+    <div class="stat"><div class="stat-top">المواد <span class="stat-icon">▤</span></div><strong id="progressSubjects">0</strong><small>مادة دراسية</small></div>
+  </div>
+  <div class="grid2"><div class="panel"><div class="panel-head"><div><h3>نشاط آخر 7 أيام</h3><p>عدد دقائق التركيز لكل يوم</p></div></div><div class="chart" id="progressChart"></div></div><div class="panel"><div class="panel-head"><div><h3>ملخص الإنجاز</h3><p>حالة مهامك الحالية</p></div></div><div class="progress-row"><span>المهام المكتملة</span><span id="progressPct">0%</span></div><div class="bar"><div id="progressBar"></div></div><div id="progressSummary" style="font-size:12px;line-height:2;color:var(--muted);margin-top:17px"></div></div></div>
+  <div class="panel"><div class="panel-head"><div><h3>نصائح عملية</h3><p>خطوات بسيطة للاستفادة من خطتك</p></div></div><div class="items"><div class="subject-card"><h4>✦ ابدأ بالأصعب</h4><p>اختر مهمة واحدة عالية الأولوية وابدأ بها قبل الانتقال إلى مهام أخرى.</p></div><div class="subject-card"><h4>◷ ذاكر على فترات</h4><p>استخدم مؤقت التركيز، وخذ استراحة قصيرة لتجديد انتباهك.</p></div><div class="subject-card"><h4>◈ اختبر ذاكرتك</h4><p>حوّل المعلومات المهمة إلى بطاقات سؤال وجواب، ثم راجعها بانتظام.</p></div></div></div>
+</section>
+<section class="page" id="page-settings">
+  <h2 class="section-title">الإعدادات والبيانات</h2><p class="section-desc">تحكم في بياناتك وخياراتك. لا يتم إرسال بياناتك إلى أي خادم.</p>
+  <div class="settings-box"><h4>👤 اسم العرض</h4><p>استخدم اسمًا يظهر في لوحة الترحيب.</p><div class="field"><label for="userName">اسمك</label><input id="userName" maxlength="50" placeholder="صديقي"></div><button class="btn primary" id="saveName">حفظ الاسم</button></div>
+  <div class="settings-box"><h4>💾 النسخ الاحتياطي</h4><p>نزّل نسخة JSON من المواد والمهام والبطاقات والجلسات، أو استعد نسخة سابقة. الاستعادة تستبدل البيانات الحالية؛ صدّر نسخة أولًا إذا كنت تحتاجها.</p><div class="form-actions"><button class="btn primary" id="settingsExport">تنزيل نسخة احتياطية</button><button class="btn" id="settingsImport">استعادة من ملف</button></div></div>
+  <div class="settings-box"><h4>🧹 إعادة ضبط البيانات</h4><p>هذا الإجراء يحذف بيانات التطبيق المحفوظة في هذا المتصفح. لا يمكن التراجع عنه إلا إذا كان لديك نسخة احتياطية.</p><button class="btn danger" id="resetData">حذف بيانات التطبيق</button></div>
+  <div class="settings-box"><h4>ℹ️ حول STUDYFORGE</h4><p>تطبيق مذاكرة محلي مبني باستخدام HTML وCSS وJavaScript. البيانات محفوظة في localStorage على هذا المتصفح. حذف بيانات المتصفح قد يؤدي إلى فقدانها، لذلك احتفظ بنسخة احتياطية.</p></div>
+</section>
+</main>
+</div>
+<footer class="footer">STUDYFORGE · نظامك الشخصي لتنظيم الدراسة · استمر، ولو بخطوة صغيرة.</footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const STORE_KEY="studyforge_data_v1";
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const validDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||"");
+const initialState=()=>({version:1,name:"",tasks:[],subjects:[],cards:[],sessions:[],review:{}});
+let state=initialState();
+let toastTimer=null;
+function toast(message){
+ const el=$("toast");el.textContent=message;el.classList.add("show");
+ clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2400);
+}
+function save(){
+ try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}
+ catch(e){toast("تعذر حفظ البيانات. قد تكون مساحة التخزين ممتلئة.");}
+}
+function load(){
+ try{
+  const raw=localStorage.getItem(STORE_KEY);
+  if(!raw)return;
+  const parsed=JSON.parse(raw);
+  if(parsed&&parsed.version===1&&Array.isArray(parsed.tasks)&&Array.isArray(parsed.subjects)&&Array.isArray(parsed.cards)&&Array.isArray(parsed.sessions)){
+   state={...initialState(),...parsed,review:parsed.review&&typeof parsed.review==="object"?parsed.review:{}};
+  }
+ }catch{toast("تعذر قراءة البيانات السابقة. يمكنك استعادة نسخة احتياطية.");}
+}
+function showPage(name){
+ const page=$("page-"+name);if(!page)return;
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p===page));
+ document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+ if(name==="focus")renderSessions();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.go)));
+$("todayLabel").textContent="📅 "+new Date().toLocaleDateString("ar-EG",{weekday:"short",day:"numeric",month:"short"});
+function subjectName(id){return state.subjects.find(s=>s.id===id)?.name||"";}
+function subjectColor(id){return state.subjects.find(s=>s.id===id)?.color||"#a78bfa";}
+function taskIsDone(t){return !!t.done;}
+function sortedTasks(tasks){
+ const rank={high:0,medium:1,low:2};
+ return [...tasks].sort((a,b)=>(Number(a.done)-Number(b.done))||(rank[a.priority]??1)-(rank[b.priority]??1)||((a.date||"9999")<(b.date||"9999")?-1:1));
+}
+function fillSubjectOptions(){
+ const options=state.subjects.map(s=>`<option value="${escapeHTML(s.id)}">${escapeHTML(s.name)}</option>`).join("");
+ for(const id of ["taskSubject","cardSubject"]){
+  const el=$(id),old=el.value;
+  el.innerHTML='<option value="">بدون مادة'+(id==="taskSubject"?" محددة":"")+'</option>'+options;
+  if(state.subjects.some(s=>s.id===old))el.value=old;
+ }
+ const filter=$("flashFilter"),oldFilter=filter.value;
+ filter.innerHTML='<option value="all">كل المواد</option>'+options;
+ if(oldFilter==="all"||state.subjects.some(s=>s.id===oldFilter))filter.value=oldFilter||"all";
+ const taskSelect=$("focusTask"),oldTask=taskSelect.value;
+ taskSelect.innerHTML='<option value="">جلسة عامة</option>'+sortedTasks(state.tasks.filter(t=>!t.done)).map(t=>`<option value="${escapeHTML(t.id)}">${escapeHTML(t.title)}</option>`).join("");
+ if(state.tasks.some(t=>t.id===oldTask&&!t.done))taskSelect.value=oldTask;
+}
+function renderTaskItem(t,compact=false){
+ const priority={high:"عالية",medium:"متوسطة",low:"منخفضة"}[t.priority]||"متوسطة";
+ const dateLabel=t.date?(t.date<today()&&!t.done?"متأخرة · ":"موعد · ")+t.date:"بدون موعد";
+ return `<div class="task ${t.done?"done":""}"><input type="checkbox" data-action="toggle-task" data-id="${escapeHTML(t.id)}" ${t.done?"checked":""} aria-label="تغيير حالة المهمة"><div class="task-info"><div class="task-title">${escapeHTML(t.title)}</div><div class="task-meta"><span class="badge ${escapeHTML(t.priority)}">${priority}</span>${t.subjectId?`<span class="badge">${escapeHTML(subjectName(t.subjectId)||"مادة محذوفة")}</span>`:""}<span>${escapeHTML(dateLabel)}</span>${!compact&&t.estimate?`<span>${Number(t.estimate)} دقيقة تقديرية</span>`:""}</div></div>${compact?"":`<button class="btn small" data-action="edit-task" data-id="${escapeHTML(t.id)}">تعديل</button><button class="btn small danger" data-action="delete-task" data-id="${escapeHTML(t.id)}">حذف</button>`}</div>`;
+}
+function renderTasks(){
+ const query=$("taskSearch").value.trim().toLocaleLowerCase();
+ const filter=$("taskFilter").value;
+ const filtered=sortedTasks(state.tasks).filter(t=>(filter==="all"||(filter==="done"?t.done:!t.done))&&(`${t.title} ${t.notes||""} ${subjectName(t.subjectId)}`).toLocaleLowerCase().includes(query));
+ $("taskList").innerHTML=filtered.length?filtered.map(t=>renderTaskItem(t)).join(""):'<div class="empty">لا توجد مهام مطابقة.<br>أضف مهمة جديدة للبدء.</div>';
+ $("taskCount").textContent=`${filtered.length} من ${state.tasks.length} مهمة`;
+ $("dashTasks").innerHTML=sortedTasks(state.tasks.filter(t=>!t.done)).slice(0,4).map(t=>renderTaskItem(t,true)).join("")||'<div class="empty">كل شيء هادئ هنا! أضف أول مهمة وابدأ الإنجاز ✨</div>';
+ const done=state.tasks.filter(t=>t.done).length,pct=state.tasks.length?Math.round(done/state.tasks.length*100):0;
+ $("dashProgressLabel").textContent=pct+"%";$("dashProgressBar").style.width=pct+"%";
+}
+function resetTaskForm(){
+ $("taskForm").reset();$("taskId").value="";$("taskPriority").value="medium";$("taskEstimate").value=30;
+ $("taskFormTitle").textContent="إضافة مهمة جديدة";$("taskSubmit").textContent="+ حفظ المهمة";$("taskCancel").hidden=true;
+}
+$("taskForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const title=$("taskTitle").value.trim();if(!title)return;
+ const id=$("taskId").value;const old=state.tasks.find(t=>t.id===id);
+ const subjectId=$("taskSubject").value;
+ const task={id:id||uid(),title,subjectId:state.subjects.some(s=>s.id===subjectId)?subjectId:"",date:validDate($("taskDate").value)?$("taskDate").value:"",priority:$("taskPriority").value,estimate:Math.max(1,Math.min(1440,Number($("taskEstimate").value)||30)),notes:$("taskNotes").value.trim(),done:old?.done||false,createdAt:old?.createdAt||Date.now(),completedAt:old?.completedAt||null};
+ if(old)state.tasks=state.tasks.map(t=>t.id===id?task:t);else state.tasks.push(task);
+ save();resetTaskForm();renderAll();toast(old?"تم تحديث المهمة ✓":"تمت إضافة المهمة ✓");
+});
+$("taskCancel").addEventListener("click",resetTaskForm);
+$("taskSearch").addEventListener("input",renderTasks);
+$("taskFilter").addEventListener("change",renderTasks);
+function editTask(id){
+ const t=state.tasks.find(t=>t.id===id);if(!t)return;
+ showPage("tasks");$("taskId").value=t.id;$("taskTitle").value=t.title;$("taskSubject").value=t.subjectId||"";
+ $("taskDate").value=t.date||"";$("taskPriority").value=t.priority||"medium";$("taskEstimate").value=t.estimate||30;$("taskNotes").value=t.notes||"";
+ $("taskFormTitle").textContent="تعديل المهمة";$("taskSubmit").textContent="حفظ التعديلات";$("taskCancel").hidden=false;
+ $("taskTitle").focus();
+}
+function deleteTask(id){
+ const t=state.tasks.find(t=>t.id===id);if(!t)return;
+ if(!confirm(`هل تريد حذف المهمة «${t.title}»؟`))return;
+ state.tasks=state.tasks.filter(t=>t.id!==id);save();renderAll();toast("تم حذف المهمة.");
+}
+function toggleTask(id,done){
+ const t=state.tasks.find(t=>t.id===id);if(!t)return;
+ t.done=done;t.completedAt=done?Date.now():null;save();renderAll();toast(done?"ممتاز! تم إنجاز المهمة ✓":"أُعيد فتح المهمة.");
+}
+function resetSubjectForm(){
+ $("subjectForm").reset();$("subjectId").value="";$("subjectColor").value="#a78bfa";
+ $("subjectFormTitle").textContent="إضافة مادة";$("subjectSubmit").textContent="+ حفظ المادة";$("subjectCancel").hidden=true;
+}
+$("subjectForm").addEventListener("submit",e=>{
+ e.preventDefault();const name=$("subjectName").value.trim();if(!name)return;
+ const id=$("subjectId").value;const old=state.subjects.find(s=>s.id===id);
+ if(state.subjects.some(s=>s.name.toLocaleLowerCase()===name.toLocaleLowerCase()&&s.id!==id)){toast("هذه المادة موجودة بالفعل.");return;}
+ const subject={id:id||uid(),name,color:$("subjectColor").value,goal:$("subjectGoal").value.trim(),createdAt:old?.createdAt||Date.now()};
+ if(old)state.subjects=state.subjects.map(s=>s.id===id?subject:s);else state.subjects.push(subject);
+ save();resetSubjectForm();renderAll();toast(old?"تم تعديل المادة.":"تمت إضافة المادة ✓");
+});
+$("subjectCancel").addEventListener("click",resetSubjectForm);
+function editSubject(id){
+ const s=state.subjects.find(s=>s.id===id);if(!s)return;
+ showPage("subjects");$("subjectId").value=s.id;$("subjectName").value=s.name;$("subjectColor").value=s.color;$("subjectGoal").value=s.goal||"";
+ $("subjectFormTitle").textContent="تعديل المادة";$("subjectSubmit").textContent="حفظ التعديلات";$("subjectCancel").hidden=false;$("subjectName").focus();
+}
+function deleteSubject(id){
+ const s=state.subjects.find(s=>s.id===id);if(!s)return;
+ if(!confirm(`حذف مادة «${s.name}»؟ ستبقى المهام والبطاقات المرتبطة بها لكن دون مادة.`))return;
+ state.subjects=state.subjects.filter(x=>x.id!==id);
+ state.tasks.forEach(t=>{if(t.subjectId===id)t.subjectId="";});
+ state.cards.forEach(c=>{if(c.subjectId===id)c.subjectId="";});
+ save();renderAll();toast("تم حذف المادة.");
+}
+function renderSubjects(){
+ $("subjectList").innerHTML=state.subjects.length?state.subjects.map(s=>{
+  const tasks=state.tasks.filter(t=>t.subjectId===s.id),done=tasks.filter(t=>t.done).length,cards=state.cards.filter(c=>c.subjectId===s.id).length;
+  const pct=tasks.length?Math.round(done/tasks.length*100):0;
+  return `<div class="subject-card" style="border-right:3px solid ${escapeHTML(s.color)}"><h4>${escapeHTML(s.name)}</h4><p>${escapeHTML(s.goal||"لم يُحدد هدف لهذه المادة.")}</p><div class="progress-row"><span>${done} من ${tasks.length} مهمة · ${cards} بطاقة</span><span>${pct}%</span></div><div class="bar"><div style="width:${pct}%;background:${escapeHTML(s.color)}"></div></div><div class="subject-foot" style="margin-top:13px"><span class="badge" style="color:${escapeHTML(s.color)}">${tasks.length} مهام</span><div class="form-actions"><button class="btn small" data-action="edit-subject" data-id="${escapeHTML(s.id)}">تعديل</button><button class="btn small danger" data-action="delete-subject" data-id="${escapeHTML(s.id)}">حذف</button></div></div></div>`;
+ }).join(""):'<div class="empty">لم تضف مواد بعد.<br>أنشئ مادة لتربط بها مهامك وبطاقاتك.</div>';
+}
+$("cardForm").addEventListener("submit",e=>{
+ e.preventDefault();const question=$("cardQuestion").value.trim(),answer=$("cardAnswer").value.trim();if(!question||!answer)return;
+ const sid=$("cardSubject").value;
+ state.cards.push({id:uid(),question,answer,subjectId:state.subjects.some(s=>s.id===sid)?sid:"",createdAt:Date.now()});
+ save();$("cardForm").reset();renderAll();toast("تمت إضافة البطاقة ✓");
+});
+$("cardSample").addEventListener("click",()=>{
+ state.cards.push({id:uid(),question:"ما المقصود بالتعلم النشط؟",answer:"طريقة تعلم يشارك فيها الطالب بفاعلية من خلال حل المشكلات والأسئلة والتطبيق، بدل الاكتفاء بالاستماع.",subjectId:"",createdAt:Date.now()});
+ save();renderAll();toast("أُضيفت بطاقة المثال.");
+});
+let flashIndex=0,flashFlipped=false,flashOrder=[];
+function filteredCards(){
+ const filter=$("flashFilter").value;
+ return state.cards.filter(c=>filter==="all"||c.subjectId===filter);
+}
+function renderFlash(){
+ const cards=filteredCards();
+ if(flashIndex>=cards.length)flashIndex=Math.max(0,cards.length-1);
+ $("flashCount").textContent=cards.length?`البطاقة ${flashIndex+1} من ${cards.length}`:"لا توجد بطاقات للمراجعة";
+ $("flashSummary").textContent=cards.length?`${cards.length} بطاقة في هذه المجموعة`:"أضف بطاقات أسئلة وأجوبة للبدء.";
+ $("flashCard").style.opacity=cards.length?"1":".7";
+ $("flashText").textContent=cards.length?(flashFlipped?cards[flashIndex].answer:cards[flashIndex].question):"أضف أول بطاقة لتبدأ المراجعة";
+ $("flashLabel").textContent=cards.length?(flashFlipped?"ANSWER":"QUESTION"):"STUDY CARDS";
+ $("flashHint").textContent=cards.length?(flashFlipped?"اضغط لقلب البطاقة إلى السؤال":"اضغط على البطاقة أو زر القلب لإظهار الإجابة"):"ستظهر بطاقاتك هنا";
+ $("flashPrev").disabled=!cards.length;$("flashNext").disabled=!cards.length;$("flashFlip").disabled=!cards.length;
+ $("flashKnow").disabled=!cards.length;$("flashNeed").disabled=!cards.length;
+ $("cardList").innerHTML=state.cards.length?state.cards.map(c=>`<div class="subject-card"><div style="font-size:12px;line-height:1.8"><strong>س:</strong> ${escapeHTML(c.question)}<br><strong style="color:var(--cyan)">ج:</strong> ${escapeHTML(c.answer)}</div><div class="subject-foot" style="margin-top:12px"><span class="badge">${escapeHTML(subjectName(c.subjectId)||"بدون مادة")}</span><button class="btn small danger" data-action="delete-card" data-id="${escapeHTML(c.id)}">حذف البطاقة</button></div></div>`).join(""):'<div class="empty">لا توجد بطاقات حتى الآن.</div>';
+}
+function flipCard(){if(!filteredCards().length)return;flashFlipped=!flashFlipped;renderFlash();}
+$("flashCard").addEventListener("click",flipCard);
+$("flashCard").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();flipCard();}});
+$("flashFlip").addEventListener("click",flipCard);
+$("flashPrev").addEventListener("click",()=>{const n=filteredCards().length;if(!n)return;flashIndex=(flashIndex-1+n)%n;flashFlipped=false;renderFlash();});
+$("flashNext").addEventListener("click",()=>{const n=filteredCards().length;if(!n)return;flashIndex=(flashIndex+1)%n;flashFlipped=false;renderFlash();});
+$("flashFilter").addEventListener("change",()=>{flashIndex=0;flashFlipped=false;renderFlash();});
+$("flashKnow").addEventListener("click",()=>{const c=filteredCards()[flashIndex];if(!c)return;state.review[c.id]={...(state.review[c.id]||{}),known:(state.review[c.id]?.known||0)+1,lastReviewed:Date.now()};save();toast("أحسنت! سجلنا إتقان البطاقة ✓");$("flashNext").click();});
+$("flashNeed").addEventListener("click",()=>{const c=filteredCards()[flashIndex];if(!c)return;state.review[c.id]={...(state.review[c.id]||{}),needsReview:(state.review[c.id]?.needsReview||0)+1,lastReviewed:Date.now()};save();toast("سنعيد مراجعتها؛ التكرار يساعد على التذكر.");$("flashNext").click();});
+/* Focus timer: interval-based countdown uses elapsed wall time to resist throttling. */
+let timerDuration=25*60,timerRemaining=25*60,timerRunning=false,timerMode="focus",timerEndAt=0,timerInterval=null;
+function getMinutes(id,min,max,fallback){return Math.max(min,Math.min(max,Number($(id).value)||fallback));}
+function updateTimerDisplay(){
+ const mins=Math.floor(timerRemaining/60),secs=timerRemaining%60;
+ $("timerDisplay").textContent=String(mins).padStart(2,"0")+":"+String(secs).padStart(2,"0");
+ const progress=timerDuration?Math.max(0,Math.min(1,1-timerRemaining/timerDuration)):0;
+ $("timerRing").style.setProperty("--angle",(progress*360)+"deg");
+ $("timerMode").textContent=timerMode==="focus"?"جلسة تركيز":"استراحة";
+ $("timerHeading").textContent=timerMode==="focus"?"حان وقت التركيز":"استرح قليلًا ثم عُد";
+ $("timerStart").textContent=timerRunning?"الجلسة تعمل…":"▶ ابدأ";
+ $("timerStart").disabled=timerRunning;$("timerPause").disabled=!timerRunning;
+}
+function configureTimer(mode=timerMode){
+ timerMode=mode;const mins=mode==="focus"?getMinutes("focusMinutes",1,180,25):getMinutes("breakMinutes",1,60,5);
+ timerDuration=mins*60;timerRemaining=timerDuration;timerEndAt=0;timerRunning=false;
+ if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+ updateTimerDisplay();
+}
+function recordFocusSession(minutes,taskId){
+ const now=Date.now();state.sessions.push({id:uid(),minutes,date:today(),timestamp:now,taskId:state.tasks.some(t=>t.id===taskId)?taskId:""});
+ if(state.sessions.length>2000)state.sessions=state.sessions.slice(-2000);
+ save();renderAll();
+}
+function finishTimer(){
+ timerRemaining=0;timerRunning=false;if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+ updateTimerDisplay();
+ if(timerMode==="focus"){
+  const mins=timerDuration/60;recordFocusSession(mins,$("focusTask").value);
+  setStatus("timerStatus",`أحسنت! اكتملت جلسة تركيز مدتها ${mins} دقيقة وسُجّلت في تقدمك.`,"success");
+  toast("اكتملت جلسة التركيز! 🎉");
+  configureTimer("break");
+ }else{
+  setStatus("timerStatus","انتهت الاستراحة. أنت جاهز لجلسة جديدة.","success");
+  toast("انتهت الاستراحة. حان وقت العودة!");
+  configureTimer("focus");
+ }
+}
+function timerTick(){
+ if(!timerRunning)return;
+ timerRemaining=Math.max(0,Math.ceil((timerEndAt-Date.now())/1000));
+ if(timerRemaining<=0){finishTimer();return;}
+ updateTimerDisplay();
+}
+$("timerStart").addEventListener("click",()=>{
+ if(timerRunning)return;
+ if(timerRemaining<=0)configureTimer(timerMode);
+ timerRunning=true;timerEndAt=Date.now()+timerRemaining*1000;
+ timerInterval=setInterval(timerTick,250);updateTimerDisplay();
+ setStatus("timerStatus",timerMode==="focus"?"جلسة التركيز جارية. أبعد المشتتات وركّز على مهمتك.":"استراحتك بدأت. خذ نفسًا عميقًا.");
+});
+$("timerPause").addEventListener("click",()=>{
+ if(!timerRunning)return;
+ timerRemaining=Math.max(0,Math.ceil((timerEndAt-Date.now())/1000));timerRunning=false;
+ if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+ updateTimerDisplay();setStatus("timerStatus","تم إيقاف المؤقت مؤقتًا.");
+});
+$("timerReset").addEventListener("click",()=>{
+ configureTimer(timerMode);setStatus("timerStatus","تمت إعادة ضبط المؤقت.");
+});
+$("timerSkip").addEventListener("click",()=>{
+ if(timerRunning&&timerMode==="focus"){
+  if(!confirm("تخطّي جلسة التركيز دون تسجيلها؟"))return;
+ }
+ configureTimer(timerMode==="focus"?"break":"focus");
+ setStatus("timerStatus","تم الانتقال إلى "+(timerMode==="focus"?"جلسة التركيز":"الاستراحة")+".");
+});
+$("focusMinutes").addEventListener("change",()=>{if(!timerRunning&&timerMode==="focus")configureTimer("focus");});
+$("breakMinutes").addEventListener("change",()=>{if(!timerRunning&&timerMode==="break")configureTimer("break");});
+function renderSessions(){
+ $("sessionTotal").textContent=state.sessions.length+" جلسة";
+ const list=[...state.sessions].reverse().slice(0,12);
+ $("sessionList").innerHTML=list.length?list.map(s=>`<div class="session"><div><strong>${escapeHTML(s.minutes)} دقيقة تركيز</strong><br><small>${escapeHTML(s.date||"")} · ${escapeHTML(s.taskId?state.tasks.find(t=>t.id===s.taskId)?.title||"مهمة سابقة":"جلسة عامة")}</small></div><span class="badge">${s.timestamp?new Date(s.timestamp).toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit"}):""}</span></div>`).join(""):'<div class="empty">لم تكمل جلسة بعد. ابدأ المؤقت وستظهر هنا.</div>';
+}
+/* Charts and dashboard */
+function minutesByDate(){
+ const map={};state.sessions.forEach(s=>{if(s.date)map[s.date]=(map[s.date]||0)+Number(s.minutes||0);});return map;
+}
+function renderChart(targetId){
+ const map=minutesByDate(),days=[];
+ for(let i=6;i>=0;i--){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-i);const key=d.toISOString().slice(0,10);days.push({key,label:d.toLocaleDateString("ar-EG",{weekday:"short"}),value:map[key]||0});}
+ const max=Math.max(25,...days.map(d=>d.value));
+ $(targetId).innerHTML=days.map(d=>`<div class="chart-col" title="${escapeHTML(d.key)}: ${d.value} دقيقة"><div class="chart-bar" style="height:${Math.max(3,d.value/max*100)}%"></div><div class="chart-label">${escapeHTML(d.label)}</div></div>`).join("");
+ return days.reduce((sum,d)=>sum+d.value,0);
+}
+function renderDashboard(){
+ const done=state.tasks.filter(t=>t.done).length,total=state.tasks.length,pct=total?Math.round(done/total*100):0;
+ const minutes=state.sessions.reduce((sum,s)=>sum+Number(s.minutes||0),0);
+ $("statDone").textContent=done;$("statMinutes").textContent=minutes.toLocaleString("ar-EG");$("statCards").textContent=state.cards.length;$("statPercent").textContent=pct+"%";
+ $("welcomeText").textContent=state.name?`أهلًا ${state.name}! خطط لليوم وابدأ بأهم مهمة عندك.`:"خطوة صغيرة اليوم، وفرق كبير غدًا. نظّم دراستك وابدأ بأهم مهمة عندك.";
+ renderChart("dashChart");
+ const week=renderChart("dashChart");
+ $("dashChartNote").textContent=week?`سجلت ${week} دقيقة تركيز خلال آخر 7 أيام.`:"ابدأ جلسة تركيز لتظهر بياناتك هنا.";
+}
+function renderProgress(){
+ const done=state.tasks.filter(t=>t.done).length,total=state.tasks.length,minutes=state.sessions.reduce((sum,s)=>sum+Number(s.minutes||0),0),pct=total?Math.round(done/total*100):0;
+ $("progressTasks").textContent=total;$("progressDone").textContent=done;$("progressHours").textContent=(minutes/60).toLocaleString("ar-EG",{maximumFractionDigits:1});$("progressSubjects").textContent=state.subjects.length;
+ $("progressPct").textContent=pct+"%";$("progressBar").style.width=pct+"%";
+ $("progressSummary").textContent=`أنجزت ${done} من أصل ${total} مهمة. لديك ${state.cards.length} بطاقة حفظ و${state.sessions.length} جلسة تركيز مكتملة. إجمالي وقت التركيز ${minutes} دقيقة.`;
+ renderChart("progressChart");
+}
+function renderAll(){
+ fillSubjectOptions();renderTasks();renderSubjects();renderFlash();renderSessions();renderDashboard();renderProgress();
+ $("userName").value=state.name||"";
+}
+$("saveName").addEventListener("click",()=>{state.name=$("userName").value.trim().slice(0,50);save();renderDashboard();toast("تم حفظ اسم العرض.");});
+/* Backup / restore */
+function exportBackup(){
+ const blob=new Blob([JSON.stringify({...state,exportedAt:new Date().toISOString()},null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="studyforge-backup-"+today()+".json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("تم تجهيز النسخة الاحتياطية.");
+}
+function importBackup(file){
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const d=JSON.parse(reader.result);
+   if(!d||d.version!==1||!Array.isArray(d.tasks)||!Array.isArray(d.subjects)||!Array.isArray(d.cards)||!Array.isArray(d.sessions))throw new Error("البنية غير متوافقة");
+   const safeArray=(arr,required)=>arr.every(x=>x&&typeof x==="object"&&typeof x.id==="string"&&required.every(k=>typeof x[k]==="string"));
+   if(!safeArray(d.tasks,["title"])||!safeArray(d.subjects,["name"])||!safeArray(d.cards,["question","answer"])||!d.sessions.every(s=>s&&typeof s==="object"&&Number.isFinite(Number(s.minutes))&&Number(s.minutes)>=0))throw new Error("تحتوي النسخة على بيانات غير صالحة");
+   if(!confirm("استعادة النسخة ستستبدل بياناتك الحالية. هل تريد المتابعة؟"))return;
+   state={...initialState(),version:1,name:typeof d.name==="string"?d.name.slice(0,50):"",tasks:d.tasks,subjects:d.subjects,cards:d.cards,sessions:d.sessions,review:d.review&&typeof d.review==="object"?d.review:{}};
+   save();renderAll();resetTaskForm();resetSubjectForm();toast("تمت استعادة النسخة الاحتياطية ✓");
+  }catch(err){alert("تعذر استعادة النسخة: "+err.message);}
+ };
+ reader.onerror=()=>alert("تعذرت قراءة الملف.");
+ reader.readAsText(file);
+}
+$("exportBtn").addEventListener("click",exportBackup);$("settingsExport").addEventListener("click",exportBackup);
+$("importBtn").addEventListener("click",()=>$("importFile").click());$("settingsImport").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",e=>{importBackup(e.target.files[0]);e.target.value="";});
+$("resetData").addEventListener("click",()=>{
+ if(!confirm("تحذير: سيتم حذف كل المواد والمهام والبطاقات والجلسات من هذا المتصفح. هل أنت متأكد؟"))return;
+ if(!confirm("تأكيد أخير: هل صدّرت نسخة احتياطية أو تقبل فقدان البيانات؟"))return;
+ state=initialState();save();resetTaskForm();resetSubjectForm();$("cardForm").reset();configureTimer("focus");renderAll();toast("تمت إعادة ضبط بيانات التطبيق.");
+});
+/* Event delegation */
+document.addEventListener("click",e=>{
+ const btn=e.target.closest("[data-action]");if(!btn)return;
+ const {action,id}=btn.dataset;if(!id)return;
+ if(action==="edit-task")editTask(id);
+ if(action==="delete-task")deleteTask(id);
+ if(action==="edit-subject")editSubject(id);
+ if(action==="delete-subject")deleteSubject(id);
+ if(action==="delete-card"){
+  const c=state.cards.find(c=>c.id===id);if(!c)return;
+  if(!confirm("هل تريد حذف هذه البطاقة؟"))return;
+  state.cards=state.cards.filter(c=>c.id!==id);delete state.review[id];
+  if(flashIndex>=filteredCards().length)flashIndex=Math.max(0,filteredCards().length-1);
+  save();renderAll();toast("تم حذف البطاقة.");
+ }
+});
+load();renderAll();configureTimer("focus");
+</script>
+</body>
+</html>
